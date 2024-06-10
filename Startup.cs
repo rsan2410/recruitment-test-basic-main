@@ -23,11 +23,24 @@ namespace InterviewTestBasic
         {
             services.AddControllersWithViews();
 
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+            // // In production, the React files will be served from this directory
+            // services.AddSpaStaticFiles(configuration =>
+            // {
+            //     configuration.RootPath = "ClientApp/build";
+            // }); 
+            // ^COMMENTED
+
+            // Added CORS
+            services.AddCors(options =>
             {
-                configuration.RootPath = "ClientApp/build";
+                options.AddPolicy("AllowReactApp",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000").WithHeaders("Content-Type", "Authorization").AllowAnyMethod();
+                });
             });
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,10 +51,12 @@ namespace InterviewTestBasic
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            // app.UseStaticFiles(); COMMENTED
+            // app.UseSpaStaticFiles(); COMMENTED
 
             app.UseRouting();
+
+            app.UseCors("AllowReactApp"); // Added
 
             app.UseEndpoints(endpoints =>
             {
@@ -50,15 +65,16 @@ namespace InterviewTestBasic
                     pattern: "{controller}/{action=Index}/{id?}");
             });
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
+            // app.UseSpa(spa =>
+            // {
+            //     spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
+            //     if (env.IsDevelopment())
+            //     {
+            //         spa.UseReactDevelopmentServer(npmScript: "start");
+            //     }
+            // });
+            // ^COMMENTED
         }
 
         private void PrepareDB()

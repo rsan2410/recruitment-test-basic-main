@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PencilSquare, PersonPlus, Check2 } from 'react-bootstrap-icons';
 
 // Define the EmployeeList component
 export default function EmployeeList() {
@@ -14,12 +15,12 @@ export default function EmployeeList() {
 
     // Fetch all employee data from the database
     async function getEmployees() {
-        return fetch("/employees").then(response => response.json());
+        return fetch("http://localhost:5000/employees").then(response => response.json());
     }
 
     // Create new employee
     async function createEmployee(name, value) {
-        return fetch("/employees", {
+        return fetch("http://localhost:5000/employees", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: name, value: value })
@@ -28,7 +29,7 @@ export default function EmployeeList() {
 
     // Update existing employee
     async function updateEmployee(name, value) {
-        return fetch("/employees", {
+        return fetch("http://localhost:5000/employees", {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: name, value: value })
@@ -64,13 +65,23 @@ export default function EmployeeList() {
             <form onSubmit={handleSubmit}>
                 <input type="text" value={name} onChange={e => setName(e.target.value)} required />
                 <input type="text" value={value} onChange={e => setValue(e.target.value)} required />
-                <button type="submit">{isEditing ? 'Update' : 'Create'} Employee</button>
+                <button type="submit">
+                    {isEditing ? (
+                        <>
+                            <Check2 />
+                        </>
+                    ) : (
+                        <>
+                            <PersonPlus />
+                        </>
+                    )}
+                </button>
             </form>
             <ul>
                 {employees.map(employee => (
                     <li key={employee.name}>
                         {employee.name}: {employee.value}
-                        <button onClick={() => handleEdit(employee.name, employee.value)}>Edit</button>
+                        <i onClick={() => handleEdit(employee.name, employee.value)}> <PencilSquare /> </i>
                     </li>
                 ))}
             </ul>
